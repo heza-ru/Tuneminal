@@ -1,0 +1,38 @@
+# Git
+.git
+.gitignore
+
+# Build artifacts
+tuneminal
+tuneminal.exe
+builds/
+dist/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Documentation
+*.md
+!README.md
+
+# CI/CD
+.github/
+
+# Package files
+packaging/
+
+# Docker
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Tests
+*_test.go
+

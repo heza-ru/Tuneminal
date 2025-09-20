@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2015/06/nuspec.xsd">
+  <metadata>
+    <id>tuneminal</id>
+    <version>1.0.0</version>
+    <title>Tuneminal</title>
+    <authors>Tuneminal Team</authors>
+    <owners>Tuneminal Team</owners>
+    <description>Command-line karaoke machine with live audio visualization built in Go</description>
+    <projectUrl>https://github.com/tuneminal/tuneminal</projectUrl>
+    <licenseUrl>https://github.com/tuneminal/tuneminal/blob/main/LICENSE</licenseUrl>
+    <iconUrl>https://raw.githubusercontent.com/tuneminal/tuneminal/main/assets/icon.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <releaseNotes>Initial release of Tuneminal - a command-line karaoke machine</releaseNotes>
+    <copyright>Copyright 2024 Tuneminal Team</copyright>
+    <tags>karaoke audio terminal cli music lyrics</tags>
+    <summary>Terminal-based karaoke machine with live audio visualization</summary>
+  </metadata>
+  <files>
+    <file src="tools\**" target="tools" />
+  </files>
+</package>
+

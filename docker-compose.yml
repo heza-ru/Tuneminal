@@ -1,0 +1,34 @@
+version: '3.8'
+
+services:
+  tuneminal:
+    build: .
+    container_name: tuneminal
+    volumes:
+      # Mount local audio files
+      - ./uploads:/home/tuneminal/uploads:ro
+      # Mount user home for config files
+      - ~/.tuneminal:/home/tuneminal/.tuneminal
+    devices:
+      # Audio device access
+      - /dev/snd:/dev/snd
+    environment:
+      - DISPLAY=${DISPLAY}
+    network_mode: host
+    stdin_open: true
+    tty: true
+    restart: unless-stopped
+
+  tuneminal-dev:
+    build: 
+      context: .
+      target: builder
+    container_name: tuneminal-dev
+    volumes:
+      - .:/app
+      - ./uploads:/app/uploads
+    working_dir: /app
+    command: /bin/sh
+    stdin_open: true
+    tty: true
+

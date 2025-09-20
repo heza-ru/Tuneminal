@@ -1,0 +1,32 @@
+name: tuneminal
+version: '1.0.0'
+summary: Command-line karaoke machine
+description: |
+  Tuneminal is a command-line karaoke machine with live audio visualization.
+  Play your favorite songs, follow along with synchronized lyrics, and enjoy
+  a beautiful audio visualizer - all from your terminal!
+
+grade: stable
+confinement: strict
+
+base: core20
+
+apps:
+  tuneminal:
+    command: tuneminal
+    plugs:
+      - audio-playback
+      - home
+      - removable-media
+
+parts:
+  tuneminal:
+    source: .
+    plugin: go
+    go-importpath: github.com/tuneminal/tuneminal
+    build-packages:
+      - libasound2-dev
+      - build-essential
+    stage-packages:
+      - libasound2
+

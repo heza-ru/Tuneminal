@@ -1,0 +1,84 @@
+name: Build and Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        go-version: ['1.21', '1.22']
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: ${{ matrix.go-version }}
+        
+    - name: Cache Go modules
+      uses: actions/cache@v3
+      with:
+        path: ~/go/pkg/mod
+        key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+        restore-keys: |
+          ${{ runner.os }}-go-
+          
+    - name: Install dependencies
+      run: go mod download
+      
+    - name: Run tests
+      run: go test -v ./...
+      
+    - name: Run linting
+      uses: golangci/golangci-lint-action@v3
+      with:
+        version: latest
+        args: --timeout=5m
+
+  build:
+    needs: test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        include:
+          - os: ubuntu-latest
+            GOOS: linux
+            GOARCH: amd64
+            EXT: ""
+          - os: windows-latest
+            GOOS: windows
+            GOARCH: amd64
+            EXT: ".exe"
+          - os: macos-latest
+            GOOS: darwin
+            GOARCH: amd64
+            EXT: ""
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.21'
+        
+    - name: Build
+      run: |
+        GOOS=${{ matrix.GOOS }} GOARCH=${{ matrix.GOARCH }} go build -ldflags="-s -w" -o tuneminal${{ matrix.EXT }} cmd/tuneminal/main.go
+        
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v3
+      with:
+        name: tuneminal-${{ matrix.GOOS }}-${{ matrix.GOARCH }}
+        path: tuneminal${{ matrix.EXT }}
+
