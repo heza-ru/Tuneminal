@@ -186,3 +186,4 @@ The project demonstrates advanced Go development practices, modern terminal UI d
 **🎤 Happy Karaoke with Tuneminal! 🎵✨**
 
 
+
