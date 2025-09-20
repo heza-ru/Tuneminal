@@ -152,3 +152,4 @@ The interface now provides the **same level of polish and visual appeal** as ter
 
 🎤 **Ready to rock your terminal with professional karaoke!** 🎵
 
+

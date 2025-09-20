@@ -160,3 +160,4 @@ The new Tuneminal is now a **professional-grade terminal karaoke application** w
 
 🎵 **Launch `tuneminal-tview.exe` and enjoy the new experience!** 🎤
 
+

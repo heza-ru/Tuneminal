@@ -52,3 +52,4 @@ ENV PATH="/home/tuneminal:${PATH}"
 # Default command
 ENTRYPOINT ["./tuneminal"]
 
+
