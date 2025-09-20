@@ -53,11 +53,12 @@ func (p *AudioPlayer) initializeOto() error {
 		return nil
 	}
 
-	// Initialize Oto context
+	// Initialize Oto context with optimized buffer size for low latency
 	op := &oto.NewContextOptions{
 		SampleRate:   p.sampleRate,
 		ChannelCount: p.channels,
 		Format:       oto.FormatSignedInt16LE,
+		BufferSize:   1024, // Smaller buffer for lower latency (was default ~4096)
 	}
 
 	ctx, readyChan, err := oto.NewContext(op)
@@ -176,7 +177,7 @@ func (p *AudioPlayer) convertToRawPCM(streamer beep.StreamSeekCloser, format bee
 	return pcmData, nil
 }
 
-// Play starts audio playback using Oto
+// Play starts audio playback using Oto with optimized responsiveness
 func (p *AudioPlayer) Play() error {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
@@ -189,13 +190,13 @@ func (p *AudioPlayer) Play() error {
 		return fmt.Errorf("audio context not initialized")
 	}
 
-	// Stop any existing playback
+	// Stop any existing playback quickly
 	p.stopInternal()
 
 	// Create a new player with the raw PCM data
 	p.player = p.otoContext.NewPlayer(bytes.NewReader(p.audioData))
 	
-	// Start playback
+	// Start playback immediately
 	p.player.Play()
 	p.isPlaying = true
 	p.isPaused = false
@@ -204,7 +205,7 @@ func (p *AudioPlayer) Play() error {
 	// Create new done channel
 	p.playbackDone = make(chan struct{})
 
-	// Start position tracking
+	// Start position tracking in background (don't wait)
 	go p.trackPosition()
 
 	return nil
