@@ -14,8 +14,8 @@
 ![Go Version](https://img.shields.io/badge/Go-1.21+-blue)
 ![License](https://img.shields.io/badge/License-MIT-green)
 ![Platform](https://img.shields.io/badge/Platform-Cross--Platform-lightgrey)
-![Downloads](https://img.shields.io/github/downloads/tuneminal/tuneminal/total)
-![Stars](https://img.shields.io/github/stars/tuneminal/tuneminal)
+![Downloads](https://img.shields.io/github/downloads/heza-ru/Tuneminal/total)
+![Stars](https://img.shields.io/github/stars/heza-ru/Tuneminal)
 
 ## ✨ Features
 
