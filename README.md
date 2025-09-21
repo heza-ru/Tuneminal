@@ -33,16 +33,16 @@
 ## 📸 Screenshots
 
 ### Main Interface
-![Main Interface](assets/main%20screen.png)
+![Main Interface](https://github.com/heza-ru/Tuneminal/raw/main/assets/main%20screen.png)
 
 ### Loading Screen
-![Loading Screen](assets/loading%20screen.png)
+![Loading Screen](https://github.com/heza-ru/Tuneminal/raw/main/assets/loading%20screen.png)
 
 ### Help Window
-![Help Window](assets/help%20window.png)
+![Help Window](https://github.com/heza-ru/Tuneminal/raw/main/assets/help%20window.png)
 
 ### Live Demo
-![Live Demo](assets/playback.gif)
+![Live Demo](https://github.com/heza-ru/Tuneminal/raw/main/assets/playback.gif)
 
 ## 🚀 Installation
 
