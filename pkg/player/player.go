@@ -30,6 +30,7 @@ type AudioPlayer struct {
 	duration     time.Duration
 	position     time.Duration
 	playbackDone chan struct{}
+	volume       float64 // Volume level from 0.0 to 1.0
 }
 
 // LyricEntry represents a single lyric entry with timing
@@ -44,6 +45,7 @@ func NewAudioPlayer() *AudioPlayer {
 		playbackDone: make(chan struct{}),
 		sampleRate:   44100,
 		channels:     2,
+		volume:       1.0, // Default volume (100%)
 	}
 }
 
@@ -158,19 +160,35 @@ func (p *AudioPlayer) convertToRawPCM(streamer beep.StreamSeekCloser, format bee
 		samples = append(samples, sampleBuffer[:n]...)
 	}
 
-	// Convert float64 samples to 16-bit PCM
+	// Convert float64 samples to 16-bit PCM with volume scaling
 	pcmData := make([]byte, len(samples)*2*p.channels)
 	for i, sample := range samples {
+		// Apply volume scaling
+		left := sample[0] * p.volume
+		right := sample[1] * p.volume
+
+		// Clamp values to prevent distortion
+		if left > 1.0 {
+			left = 1.0
+		} else if left < -1.0 {
+			left = -1.0
+		}
+		if right > 1.0 {
+			right = 1.0
+		} else if right < -1.0 {
+			right = -1.0
+		}
+
 		// Convert left channel
-		left := int16(sample[0] * 32767)
-		pcmData[i*4] = byte(left)
-		pcmData[i*4+1] = byte(left >> 8)
-		
+		leftInt := int16(left * 32767)
+		pcmData[i*4] = byte(leftInt)
+		pcmData[i*4+1] = byte(leftInt >> 8)
+
 		// Convert right channel (or duplicate left if mono)
-		right := int16(sample[1] * 32767)
+		rightInt := int16(right * 32767)
 		if p.channels > 1 {
-			pcmData[i*4+2] = byte(right)
-			pcmData[i*4+3] = byte(right >> 8)
+			pcmData[i*4+2] = byte(rightInt)
+			pcmData[i*4+3] = byte(rightInt >> 8)
 		}
 	}
 
@@ -269,7 +287,7 @@ func (p *AudioPlayer) Resume() {
 		p.player.Play()
 		p.isPaused = false
 		p.isPlaying = true
-		go p.trackPosition()
+		// Note: Position tracking should be handled by the calling application
 	}
 }
 
@@ -318,6 +336,79 @@ func (p *AudioPlayer) WaitForCompletion() {
 	if p.playbackDone != nil {
 		<-p.playbackDone
 	}
+}
+
+// SetVolume sets the audio volume (0.0 to 1.0)
+func (p *AudioPlayer) SetVolume(volume float64) {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+
+	// Clamp volume to valid range
+	if volume < 0.0 {
+		volume = 0.0
+	} else if volume > 1.0 {
+		volume = 1.0
+	}
+
+	p.volume = volume
+}
+
+// GetVolume returns the current volume level (0.0 to 1.0)
+func (p *AudioPlayer) GetVolume() float64 {
+	p.mutex.RLock()
+	defer p.mutex.RUnlock()
+	return p.volume
+}
+
+// SeekTo seeks to a specific position in the current audio file
+func (p *AudioPlayer) SeekTo(position time.Duration) error {
+	p.mutex.Lock()
+	defer p.mutex.Unlock()
+
+	if !p.isLoaded || p.player == nil {
+		return fmt.Errorf("no audio file loaded or player not available")
+	}
+
+	if position < 0 {
+		position = 0
+	} else if position > p.duration {
+		position = p.duration
+	}
+
+	// Calculate the byte position based on the duration
+	samplesPerSecond := p.sampleRate * p.channels
+	targetSamples := int(position.Seconds()) * samplesPerSecond
+
+	// For Oto v3, seeking requires restarting the player
+	// Store the current playback state
+	wasPlaying := p.isPlaying
+
+	// Stop current playback
+	p.stopInternal()
+
+	// Recreate the player with the original audio data
+	p.player = p.otoContext.NewPlayer(bytes.NewReader(p.audioData))
+
+	// Skip to the target position by consuming samples
+	sampleSize := 2 * p.channels // 16-bit samples
+	bytesToSkip := targetSamples * sampleSize
+
+	// Create a limited reader that skips the initial bytes
+	audioReader := bytes.NewReader(p.audioData)
+	audioReader.Seek(int64(bytesToSkip), 0)
+
+	// Create a new player starting from the seek position
+	p.player = p.otoContext.NewPlayer(audioReader)
+	p.position = position
+
+	// Restore playback state
+	if wasPlaying {
+		p.isPlaying = true
+		p.isPaused = false
+		p.player.Play()
+	}
+
+	return nil
 }
 
 // Close cleans up the audio player
