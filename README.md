@@ -44,72 +44,75 @@
 
 ## 🚀 Installation
 
-> **Note**: This is a local development project. The installation methods below assume you have the source code locally.
+> **Note**: This is a local development project. Build the application from source to get started.
 
-### Quick Install (Recommended)
-
-#### Windows
-```powershell
-# Option 1: Use the local installer script
-.\install.ps1
-
-# Option 2: Build from source
-.\build.ps1 build
-.\tuneminal.exe
-```
-
-#### macOS
-```bash
-# Build from source (recommended)
-git clone <your-repo-url> tuneminal
-cd tuneminal
-go mod tidy
-go build -o tuneminal cmd/tuneminal/main.go
-./tuneminal
-```
-
-#### Linux
-```bash
-# Build from source (recommended)
-git clone <your-repo-url> tuneminal
-cd tuneminal
-go mod tidy
-go build -o tuneminal cmd/tuneminal/main.go
-./tuneminal
-```
-
-### Build from Source
+### Build and Run (Recommended)
 
 #### Prerequisites
 - **Go 1.21+**: Download from [golang.org](https://golang.org/dl/)
 - **Audio libraries**: ALSA (Linux), Core Audio (macOS), DirectSound (Windows)
 
-#### Build Steps
+#### Windows
+```powershell
+# Clone the repository
+git clone https://github.com/heza-ru/Tuneminal.git tuneminal
+cd tuneminal
 
-1. **Clone the repository**:
-   ```bash
-   git clone https://github.com/tuneminal/tuneminal.git
-   cd tuneminal
-   ```
+# Install dependencies
+go mod tidy
 
-2. **Install dependencies**:
-   ```bash
-   go mod tidy
-   ```
+# Build the application
+go build -o tuneminal.exe cmd/tuneminal/main.go
 
-3. **Build the application**:
-   ```bash
-   # Development build
-   go build -o tuneminal cmd/tuneminal/main.go
-   
-   # Optimized release build
-   go build -ldflags="-s -w" -o tuneminal cmd/tuneminal/main.go
-   ```
+# Run Tuneminal
+.\tuneminal.exe
+```
 
-4. **Run Tuneminal**:
-   ```bash
-   ./tuneminal
-   ```
+#### macOS
+```bash
+# Clone the repository
+git clone https://github.com/heza-ru/Tuneminal.git tuneminal
+cd tuneminal
+
+# Install dependencies
+go mod tidy
+
+# Build the application
+go build -o tuneminal cmd/tuneminal/main.go
+
+# Run Tuneminal
+./tuneminal
+```
+
+#### Linux
+```bash
+# Clone the repository
+git clone https://github.com/heza-ru/Tuneminal.git tuneminal
+cd tuneminal
+
+# Install dependencies
+go mod tidy
+
+# Build the application
+go build -o tuneminal cmd/tuneminal/main.go
+
+# Run Tuneminal
+./tuneminal
+```
+
+### Advanced Build Options
+
+For optimized builds or cross-platform compilation:
+
+```bash
+# Optimized release build
+go build -ldflags="-s -w" -o tuneminal cmd/tuneminal/main.go
+
+# Cross-platform builds
+GOOS=windows GOARCH=amd64 go build -o tuneminal.exe cmd/tuneminal/main.go
+GOOS=linux GOARCH=amd64 go build -o tuneminal-linux cmd/tuneminal/main.go
+GOOS=darwin GOARCH=amd64 go build -o tuneminal-macos cmd/tuneminal/main.go
+```
 
 ### Docker Installation
 
@@ -299,7 +302,7 @@ make clean            # Clean artifacts
 ### Video Demonstration
 Watch Tuneminal in action:
 
-https://github.com/tuneminal/tuneminal/assets/playback.mp4
+https://github.com/heza-ru/Tuneminal/assets/playback.mp4
 
 ### Try the included demo files:
 
@@ -381,7 +384,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🌟 Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=tuneminal/tuneminal&type=Date)](https://star-history.com/#tuneminal/tuneminal&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=heza-ru/Tuneminal&type=Date)](https://star-history.com/#heza-ru/Tuneminal&Date)
 
 ---
 
